@@ -1,0 +1,117 @@
+type Task = 
+ record {
+   actualEnd: opt text;
+   actualStart: opt text;
+   assignee: text;
+   id: nat;
+   name: text;
+   plannedEnd: text;
+   plannedStart: text;
+   projectId: nat;
+ };
+type ReportData = 
+ record {
+   financialSummary: vec record {
+                           text;
+                           float64;
+                           float64;
+                         };
+   projectsByLocation: vec record {
+                             text;
+                             nat;
+                           };
+   projectsByStatus: vec record {
+                           text;
+                           nat;
+                         };
+   projectsByYear: vec record {
+                         nat;
+                         nat;
+                       };
+ };
+type ProjectStatus = 
+ variant {
+   Completed;
+   Delayed;
+   OnTrack;
+   Pending;
+ };
+type Project = 
+ record {
+   endDate: text;
+   id: nat;
+   location: text;
+   name: text;
+   progress: nat;
+   projectType: text;
+   spent: float64;
+   startDate: text;
+   status: ProjectStatus;
+   totalCost: float64;
+   year: nat;
+ };
+type ObstacleStatus = 
+ variant {
+   InProgress;
+   Open;
+   Resolved;
+ };
+type ObstaclePriority = 
+ variant {
+   High;
+   Low;
+   Medium;
+ };
+type Obstacle = 
+ record {
+   description: text;
+   id: nat;
+   priority: ObstaclePriority;
+   projectId: nat;
+   status: ObstacleStatus;
+ };
+type FinancialItem = 
+ record {
+   allocated: float64;
+   category: text;
+   id: nat;
+   projectId: nat;
+   spent: float64;
+ };
+type DocumentFolder = 
+ variant {
+   Contract;
+   Correspondence;
+   Execution;
+   Study;
+ };
+type Document = 
+ record {
+   date: text;
+   docNumber: text;
+   fileUrl: text;
+   folder: DocumentFolder;
+   id: nat;
+   name: text;
+   projectId: nat;
+ };
+type DashboardStats = 
+ record {
+   completed: nat;
+   delayed: nat;
+   onTrack: nat;
+   pending: nat;
+   totalBudget: float64;
+   totalProjects: nat;
+   totalSpent: float64;
+ };
+service : {
+  getDashboardStats: () -> (DashboardStats) query;
+  getDocuments: (projectId: nat) -> (vec Document) query;
+  getFinancialItems: (projectId: nat) -> (vec FinancialItem) query;
+  getObstacles: (projectId: nat) -> (vec Obstacle) query;
+  getProjectById: (id: nat) -> (opt Project) query;
+  getProjectTasks: (projectId: nat) -> (vec Task) query;
+  getProjects: () -> (vec Project) query;
+  getReportData: () -> (ReportData) query;
+}
